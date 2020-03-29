@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Models;
+using WebApplication1.DAL;
 
 namespace WebApplication1.Controllers
 {
@@ -12,6 +14,19 @@ namespace WebApplication1.Controllers
     
     public class StudentsController : ControllerBase
     {
+
+        private readonly IDbService _dbService;
+
+        public StudentsController(IDbService dbService)
+        {
+            _dbService = dbService;
+        }
+
+        [HttpGet]
+        public IActionResult GetStudents(string orderBy)
+        {
+            return Ok(_dbService.GetStudents());
+        }
         public string GetStudent()
         {
             return "Kowalski, Malewski, Andrzejewski";
@@ -32,17 +47,25 @@ namespace WebApplication1.Controllers
             return NotFound("Nie znaleziono studenta");
         }
 
-        [HttpGet]
-        public string GetStudents(string orderBy)
-        {
-            return $"Kowalski, Malewski, Andrzejewski sortowanie={orderBy}";
-        }
 
         [HttpPost]
-        public IActionResult CreateStudent(Models.Student student)
+        public IActionResult CreateStudent(Student student)
         {
             student.IndexNumber = $"s{new Random().Next(1, 20000)}";
             return Ok(student);
+        }
+
+        [HttpPut]
+        public IActionResult UpDateStudent(int id)
+        {
+
+            return Ok("Aktualizacja dokończona");
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteStudent(int id)
+        {
+            return Ok("Usuwanie ukończone");
         }
     }
 }
